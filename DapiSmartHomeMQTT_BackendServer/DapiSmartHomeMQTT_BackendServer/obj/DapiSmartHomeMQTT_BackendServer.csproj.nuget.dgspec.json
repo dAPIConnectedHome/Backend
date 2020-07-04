@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {}
+    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {}
   },
   "projects": {
-    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {
+    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
+        "projectUniqueName": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
         "projectName": "DapiSmartHomeMQTT_BackendServer",
-        "projectPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
+        "projectPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
         "packagesPath": "C:\\Users\\Tobi\\.nuget\\packages\\",
-        "outputPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\obj\\",
+        "outputPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

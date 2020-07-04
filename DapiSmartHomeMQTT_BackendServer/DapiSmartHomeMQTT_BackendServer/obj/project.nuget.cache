@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BQJGIpyyY/juEV5nPu7w2200xHTmNibpqdpt4d2QXYU09vuvM5QzIevAoV2UFijmhOd+ttEXU9bDtvvjEriuHQ==",
+  "dgSpecHash": "3giToWn6GT+kQgWA7XfnTkLFENWQOtwuJC2OIbgvb9KIzClPGMTijsdHHJyoeD5J7tvUxk4B1mk/nZek3761ww==",
   "success": true,
-  "projectFilePath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
+  "projectFilePath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

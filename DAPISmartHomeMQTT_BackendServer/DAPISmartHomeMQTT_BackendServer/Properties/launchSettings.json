@@ -19,9 +19,9 @@
     },
     "DapiSmartHomeMQTT_BackendServer": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "applicationUrl": "http://localhost:5000",
+      "launchBrowser": false,
+      "launchUrl": "DAPISmartHomeBackendAppAPI",
+      "applicationUrl": "gitathome.dd-dns.de:61999",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
