@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "sg6BqYm8XRnPCZCbfVgxv6FHcJFLMiWQz4XSbObWph3m/z/zgdvyveRnurGldxK/+Rt/zryFg2OuLvad2Wjhjw==",
+  "success": true,
+  "projectFilePath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServerHTTPS\\DAPISmartHomeMQTT_BackendServerHTTPS\\DAPISmartHomeMQTT_BackendServerHTTPS.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Tobi\\.nuget\\packages\\idunno.authentication.basic\\2.2.2\\idunno.authentication.basic.2.2.2.nupkg.sha512"
+  ],
+  "logs": []
+}

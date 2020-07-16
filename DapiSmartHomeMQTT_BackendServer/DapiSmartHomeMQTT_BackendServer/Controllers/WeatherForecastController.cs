@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace DapiSmartHomeMQTT_BackendServer.Controllers
+namespace DAPISmartHomeMQTT_BackendServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]

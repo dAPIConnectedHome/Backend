@@ -1,6 +1,6 @@
 using System;
 
-namespace DapiSmartHomeMQTT_BackendServer
+namespace DAPISmartHomeMQTT_BackendServer
 {
     public class WeatherForecast
     {

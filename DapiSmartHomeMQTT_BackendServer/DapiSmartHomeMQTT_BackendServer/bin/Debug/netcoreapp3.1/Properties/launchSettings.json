@@ -4,7 +4,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:65081",
+      "applicationUrl": "http://localhost:60998",
       "sslPort": 0
     }
   },
@@ -17,11 +17,11 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "DapiSmartHomeMQTT_BackendServer": {
+    "DAPISmartHomeMQTT_BackendServer": {
       "commandName": "Project",
-      "launchBrowser": false,
-      "launchUrl": "DAPISmartHomeBackendAppAPI",
-      "applicationUrl": "gitathome.dd-dns.de:61999",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "applicationUrl": "http://localhost:60998",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

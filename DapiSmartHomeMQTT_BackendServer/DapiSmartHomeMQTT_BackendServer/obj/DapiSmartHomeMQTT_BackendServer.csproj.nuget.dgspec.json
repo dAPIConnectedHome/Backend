@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {}
+    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer.csproj": {}
   },
   "projects": {
-    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj": {
+    "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
-        "projectName": "DapiSmartHomeMQTT_BackendServer",
-        "projectPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer.csproj",
+        "projectUniqueName": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer.csproj",
+        "projectName": "DAPISmartHomeMQTT_BackendServer",
+        "projectPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer.csproj",
         "packagesPath": "C:\\Users\\Tobi\\.nuget\\packages\\",
-        "outputPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DapiSmartHomeMQTT_BackendServer\\obj\\",
+        "outputPath": "C:\\GitHubRepos\\DAPISmartHomeMQTT\\Backend\\DAPISmartHomeMQTT_BackendServer\\DAPISmartHomeMQTT_BackendServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -40,6 +40,40 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "MQTTnet": {
+              "target": "Package",
+              "version": "[3.0.11, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

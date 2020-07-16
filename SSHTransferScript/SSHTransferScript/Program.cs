@@ -18,11 +18,12 @@ namespace SSHTransferScript
         {
             #region Handel Commandline Arguments
 
-            if (Args.Length != 2)
+            if (Args.Length != 3)
                 throw new ArgumentException("Invalid number of arguments");
 
-            string sourcePath = Args[0];
-            string targetPath = Args[1];
+            string SlnPath = Args[0];
+            string SSHsourcePath = Args[1];
+            string SSHtargetPath = Args[2];
 
             #endregion //Handel Commandline Arguments
 
@@ -58,6 +59,37 @@ namespace SSHTransferScript
 
             try
             {
+                //Start - Process dotnet - ArgumentList "publish -r linux-arm" - Wait - NoNewWindow - WorkingDirectory $PSScriptRoot
+
+                //TBD Publish in powershell
+                //string scriptfile = @Directory.GetCurrentDirectory() + @"\PublishSlnScript.ps1";
+                //using(PowerShell ps = PowerShell.Create())
+                //{
+                //    ps.AddScript(scriptfile, true);
+                //    ps.AddParameter("SlnPath", SlnPath);
+                //
+                //    ps.Invoke();
+                //}
+
+
+                //ProcessStartInfo startInfo = new ProcessStartInfo();
+                //startInfo.FileName = @"powershell.exe";
+                //startInfo.Arguments = scriptfile + " " + SlnPath;
+                //startInfo.RedirectStandardOutput = true;
+                //startInfo.RedirectStandardError = true;
+                //startInfo.UseShellExecute = false;
+                //startInfo.CreateNoWindow = true;
+                //Process process = new Process();
+                //process.StartInfo = startInfo;
+                //process.EnableRaisingEvents = true;
+                //process.ErrorDataReceived += Process_ErrorDataReceived;
+                //process.OutputDataReceived += Process_OutputDataReceived;
+                //process.Exited += Process_Exited;
+                //process.Start();
+
+                //while (WaitForscript) ;
+
+
                 #region SSH session options
 
                 SessionOptions sessionOptions = new SessionOptions
@@ -85,7 +117,7 @@ namespace SSHTransferScript
                     transferOptions.TransferMode = TransferMode.Binary;
                     
                     TransferOperationResult transferResult;
-                    transferResult = session.PutFiles(@sourcePath, targetPath, false, transferOptions);
+                    transferResult = session.PutFiles(SSHsourcePath, SSHtargetPath, false, transferOptions);
 
                     transferResult.Check();
 
@@ -108,9 +140,9 @@ namespace SSHTransferScript
 
                     #region Make Software Runnable
 
-                    session.ExecuteCommand("chown pi " + targetPath + " -R").Check();
+                    session.ExecuteCommand("chown pi " + SSHtargetPath + " -R").Check();
 
-                    session.ExecuteCommand("chmod 777 " + targetPath + " -R").Check();
+                    session.ExecuteCommand("chmod 777 " + SSHtargetPath + " -R").Check();
 
                     #endregion //Make Software Runnable
 
@@ -127,7 +159,7 @@ namespace SSHTransferScript
                             return;
                     }
 
-                    session.ExecuteCommand("dotnet run " + "/home/pi/Desktop/DAPISmartHomeAppAPI/DapiSmartHomeMQTT_BackendServer");
+                    session.ExecuteCommand("dotnet " + SSHtargetPath + "/DapiSmartHomeMQTT_BackendServer");
 
                     #endregion //Run Software
 
@@ -143,6 +175,22 @@ namespace SSHTransferScript
                 Console.ReadKey();
             }
 
+        }
+
+        private static void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
+        }
+
+        private static bool WaitForscript = true;
+        private static void Process_Exited(object sender, EventArgs e)
+        {
+            WaitForscript = false;
+        }
+
+        private static void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        {
+            Console.WriteLine(e.Data);
         }
 
         private static string _lastFileName;
