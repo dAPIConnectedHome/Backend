@@ -8,14 +8,16 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using 
+using System.Data.Common;
+using MySql.Data.MySqlClient;
+
 namespace DAPISmartHomeMQTT_BackendServer
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            
+            DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
             CreateHostBuilder(args).Build().Run();
         }
 

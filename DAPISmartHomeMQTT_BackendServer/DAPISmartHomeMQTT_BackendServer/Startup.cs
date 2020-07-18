@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DAPISmartHomeMQTT_BackendServer.Context;
 using DAPISmartHomeMQTT_BackendServer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +27,8 @@ namespace DAPISmartHomeMQTT_BackendServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SmartHomeContext>();
-            //services.AddDbContext<MQTTClientContext>(opt => opt.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
-            
+            //services.AddDbContext<SmartHomeContext>();
+            services.AddDbContext<SmartHomeDBContext>(opt => opt.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
         }
 
@@ -47,6 +46,7 @@ namespace DAPISmartHomeMQTT_BackendServer
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(name: "Client", pattern: "{Controller=Client}/{action=Index}/{id?}");
                 endpoints.MapControllers();
             });
         }
