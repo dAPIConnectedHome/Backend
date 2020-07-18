@@ -10,8 +10,10 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
         public string Topic { get; set; }
         public string Room { get; set; }
         public int? Typeid { get; set; }
-        public int? GroupId { get; set; }
+        public string GroupId { get; set; }
 
         public virtual MqttclientTypes Type { get; set; }
+
+        public int currentvalue { get; set; }
     }
 }

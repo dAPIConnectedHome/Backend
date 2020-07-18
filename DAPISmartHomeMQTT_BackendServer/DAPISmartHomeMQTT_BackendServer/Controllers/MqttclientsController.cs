@@ -46,14 +46,23 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMqttclients(string id, Mqttclients mqttclients)
+        public async Task<IActionResult> PutMqttclients(string id, string[] data)
         {
-            if (id != mqttclients.ClientId)
+            List<Mqttclients> tempclients = _context.Mqttclients.Where(x => x.ClientId.Equals(id)).ToList();
+            Mqttclients tempclient = tempclients.First();
+            if (tempclients.Any() && data.Length >= 3)
+            {
+                tempclient.Name = data[0];
+                tempclient.Room = data[1];
+                tempclient.GroupId = data[2];
+                _context.Entry(tempclient).State = EntityState.Modified;
+            }
+            else
             {
                 return BadRequest();
             }
 
-            _context.Entry(mqttclients).State = EntityState.Modified;
+            
 
             try
             {
@@ -77,7 +86,7 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
         // POST: api/Mqttclients
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
+        [HttpPost("{id}")]
         public async Task<ActionResult<Mqttclients>> PostMqttclients(Mqttclients mqttclients)
         {
             _context.Mqttclients.Add(mqttclients);

@@ -73,8 +73,11 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
                     .HasCollation("utf8mb4_general_ci");
 
                 entity.Property(e => e.GroupId)
+                    .HasColumnType("varchar(50)")
+                    .HasDefaultValueSql("'-1'")
                     .HasColumnName("GroupID")
-                    .HasColumnType("int(11)");
+                    .HasCharSet("utf8mb4")
+                    .HasCollation("utf8mb4_general_ci");
 
                 entity.Property(e => e.Name)
                     .HasColumnType("varchar(50)")
