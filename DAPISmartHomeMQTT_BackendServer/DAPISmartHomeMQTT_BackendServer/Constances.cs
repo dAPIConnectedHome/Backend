@@ -1,4 +1,7 @@
-﻿namespace DAPISmartHomeMQTT_BackendServer
+﻿using DAPISmartHomeMQTT_BackendServer.Models;
+using System.Collections.Generic;
+
+namespace DAPISmartHomeMQTT_BackendServer
 {
     public enum TypeDirection
     {
@@ -15,6 +18,8 @@
 
     static public class Constances
     {
-        
+        public static string MqttServerAddr = "shlogo.dd-dns.de";
+        public static int MqttServerPort = 60000;
+        public static List<ClientConnection> MqttClientConnections = new List<ClientConnection>();
     }
 }

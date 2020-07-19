@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
+using MQTTnet;
+using MQTTnet.Client.Options;
 
 namespace DAPISmartHomeMQTT_BackendServer
 {
@@ -18,7 +20,22 @@ namespace DAPISmartHomeMQTT_BackendServer
         public static void Main(string[] args)
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
-            CreateHostBuilder(args).Build().Run();
+
+            using (var context = new SmartHomeDBContext())
+            {
+                foreach( Mqttclients element in context.Mqttclients)
+                {
+                    Constances.MqttClientConnections.Add(new ClientConnection(element.ClientId,
+                        new MqttClientOptionsBuilder()
+                        .WithClientId(element.ClientId)
+                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .Build()));
+                }
+            }
+
+            
+
+                CreateHostBuilder(args).Build().Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

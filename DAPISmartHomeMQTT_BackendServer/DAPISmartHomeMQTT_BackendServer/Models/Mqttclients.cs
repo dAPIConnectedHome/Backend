@@ -14,6 +14,6 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
 
         public virtual MqttclientTypes Type { get; set; }
 
-        public int currentvalue { get; set; }
+        public int CurrentValue { get; set; }
     }
 }

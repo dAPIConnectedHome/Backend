@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DAPISmartHomeMQTT_BackendServer.Models;
+using MQTTnet;
+using MQTTnet.Client.Options;
+using System.Reflection.Metadata;
+using System.Threading;
 
 namespace DAPISmartHomeMQTT_BackendServer.Controllers
 {
@@ -13,11 +17,13 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
     [ApiController]
     public class MqttclientsController : ControllerBase
     {
+        private MqttFactory MqttClientFactory;
         private readonly SmartHomeDBContext _context;
 
         public MqttclientsController(SmartHomeDBContext context)
         {
             _context = context;
+            MqttClientFactory = new MqttFactory();
         }
 
         // GET: api/Mqttclients
@@ -49,17 +55,21 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
         public async Task<IActionResult> PutMqttclients(string id, string[] data)
         {
             List<Mqttclients> tempclients = _context.Mqttclients.Where(x => x.ClientId.Equals(id)).ToList();
-            Mqttclients tempclient = tempclients.First();
-            if (tempclients.Any() && data.Length >= 3)
+            
+            if (tempclients.Any())
             {
-                tempclient.Name = data[0];
-                tempclient.Room = data[1];
-                tempclient.GroupId = data[2];
-                _context.Entry(tempclient).State = EntityState.Modified;
+                Mqttclients tempclient = tempclients.First();
+                if (data.Length >= 3)
+                {
+                    tempclient.Name = data[0];
+                    tempclient.Room = data[1];
+                    tempclient.GroupId = data[2];
+                    _context.Entry(tempclient).State = EntityState.Modified;
+                }
             }
             else
             {
-                return BadRequest();
+                return NotFound();
             }
 
             
@@ -87,12 +97,61 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost("{id}")]
-        public async Task<ActionResult<Mqttclients>> PostMqttclients(Mqttclients mqttclients)
+        public async Task<ActionResult<Mqttclients>> PostMqttclients(string id, int[] value)
         {
-            _context.Mqttclients.Add(mqttclients);
-            await _context.SaveChangesAsync();
+            List<Mqttclients> matchedclients = _context.Mqttclients.Where(x => x.ClientId.Equals(id)).ToList();
 
-            return CreatedAtAction("GetMqttclients", new { id = mqttclients.ClientId }, mqttclients);
+            if(matchedclients.Any())
+            {
+                Mqttclients tempclient = matchedclients.First();
+                if (value.Length > 0)
+                {
+                    int newvalue = value[0];
+                    MqttclientTypes type = _context.MqttclientTypes.Where(x => x.TypeId.Equals(tempclient.Typeid)).First();
+                    if ( newvalue >= type.RangeMin && newvalue <= type.RangeMax)
+                    {
+                        tempclient.CurrentValue = value[0];
+                        _context.Entry(tempclient).State = EntityState.Modified;
+
+                        //TBD send to MQTT client
+                        List<ClientConnection> tempconnections = Constances.MqttClientConnections.Where(x => x.Clientid.Equals(tempclient.ClientId)).ToList();
+                        if(tempconnections.Any())
+                        {
+                            ClientConnection tempconnection = tempconnections.First();
+                            tempconnection.Send(newvalue.ToString());
+                        }
+                        else
+                        {
+                            throw new Exception("filling error");
+                        }
+                    }
+                }
+                
+
+                _context.Entry(tempclient).State = EntityState.Modified;
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MqttclientsExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return Ok();
         }
 
         // DELETE: api/Mqttclients/5
