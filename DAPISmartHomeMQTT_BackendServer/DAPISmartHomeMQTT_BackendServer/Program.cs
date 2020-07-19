@@ -12,6 +12,7 @@ using System.Data.Common;
 using MySql.Data.MySqlClient;
 using MQTTnet;
 using MQTTnet.Client.Options;
+using MQTTnet.Client;
 
 namespace DAPISmartHomeMQTT_BackendServer
 {
@@ -20,6 +21,8 @@ namespace DAPISmartHomeMQTT_BackendServer
         public static void Main(string[] args)
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
+
+            Task.Run(MqttClientAdderTask);
 
             using (var context = new SmartHomeDBContext())
             {
@@ -44,6 +47,23 @@ namespace DAPISmartHomeMQTT_BackendServer
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        private static void MqttClientAdderTask()
+        {
+            var factory = new MqttFactory();
+
+            var Creatorclient = factory.CreateMqttClient();
+            Creatorclient.UseApplicationMessageReceivedHandler(AddnewClientReceivehandler);
+            var options = new MqttClientOptionsBuilder()
+                            .WithClientId("BackendBot")
+                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .Build();
+            Creatorclient.SubscribeAsync("shlogo/#");
+        }
+        private static void AddnewClientReceivehandler(MqttApplicationMessageReceivedEventArgs e)
+        {
+            Console.WriteLine((new System.Text.ASCIIEncoding()).GetString(e.ApplicationMessage.Payload));
+        }
 
     }
 }
