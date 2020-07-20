@@ -13,6 +13,8 @@ using MySql.Data.MySqlClient;
 using MQTTnet;
 using MQTTnet.Client.Options;
 using MQTTnet.Client;
+using System.Threading;
+using System.Text;
 
 namespace DAPISmartHomeMQTT_BackendServer
 {
@@ -22,7 +24,19 @@ namespace DAPISmartHomeMQTT_BackendServer
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
 
-            Task.Run(MqttClientAdderTask);
+            var factory = new MqttFactory();
+            Constances.BackendDataClient = factory.CreateMqttClient();
+
+            Constances.BackendDataClient.UseApplicationMessageReceivedHandler(NewElementReceivehandler);
+            Constances.BackendDataClient.UseConnectedHandler(async e =>
+            {
+                await Constances.BackendDataClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("shlogo/data/").Build());
+            });
+            Constances.BackendDataClient.ConnectAsync(new MqttClientOptionsBuilder()
+                        .WithClientId("BackendAdderClient")
+                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .Build(), CancellationToken.None);
+
 
             using (var context = new SmartHomeDBContext())
             {
@@ -48,22 +62,59 @@ namespace DAPISmartHomeMQTT_BackendServer
                     webBuilder.UseStartup<Startup>();
                 });
 
-        private static void MqttClientAdderTask()
+        private static void NewElementReceivehandler(MqttApplicationMessageReceivedEventArgs e)
         {
-            var factory = new MqttFactory();
+            string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+            string[] data = payload.Split(';');
+            using(var context = new SmartHomeDBContext())
+            {
+                MqttclientTypes type;
+                string ClientID = data[0];
 
-            var Creatorclient = factory.CreateMqttClient();
-            Creatorclient.UseApplicationMessageReceivedHandler(AddnewClientReceivehandler);
-            var options = new MqttClientOptionsBuilder()
-                            .WithClientId("BackendBot")
+                string name = data[1];
+                string direction = data[2];
+                string mode = data[3];
+                int rangemin = int.Parse(data[4]);
+                int rangemax = int.Parse(data[5]);
+                var tempcol = context.MqttclientTypes.Where(x => x.Name.Equals(name) && x.Direction.Equals(direction) && x.Mode.Equals(mode) && x.RangeMin.Equals(rangemin) && x.RangeMax.Equals(rangemax));
+                if (tempcol.Any())
+                {
+                    type = tempcol.First();
+                }
+                else
+                {
+                    type = new MqttclientTypes();
+                    int i = 200;
+                    while (context.MqttclientTypes.Any(x => x.TypeId.Equals(i)))
+                        ++i;
+                    type.TypeId =i;
+                    type.Name = name;
+                    type.Direction = direction;
+                    type.Mode = mode;
+                    type.RangeMin = rangemin;
+                    type.RangeMax = rangemax;
+                    context.Add<MqttclientTypes>(type);
+                    context.SaveChanges();
+                }
+
+                Mqttclients newclient = new Mqttclients();
+                newclient.ClientId = ClientID;
+                newclient.Name = "-1";
+                newclient.Topic = ClientID;
+                newclient.Room = "-1";
+                newclient.Typeid = type.TypeId;
+                newclient.Type = type;
+                newclient.GroupId = "-1";
+                newclient.CurrentValue = rangemin;
+
+                context.Add<Mqttclients>(newclient);
+                context.SaveChanges();
+
+                Constances.MqttClientConnections.Add(new ClientConnection(newclient.ClientId, new MqttClientOptionsBuilder()
+                        .WithClientId(newclient.ClientId)
                             .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
-                            .Build();
-            Creatorclient.SubscribeAsync("shlogo/#");
+                            .Build()));
+            }
         }
-        private static void AddnewClientReceivehandler(MqttApplicationMessageReceivedEventArgs e)
-        {
-            Console.WriteLine((new System.Text.ASCIIEncoding()).GetString(e.ApplicationMessage.Payload));
-        }
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -47,6 +48,12 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
                 entity.Property(e => e.TypeId)
                     .HasColumnName("TypeID")
                     .HasColumnType("int(11)");
+
+                entity.Property(e => e.Name)
+                    .HasColumnType("varchar(50)")
+                    .HasColumnName("Name")
+                    .HasCharSet("utf8mb4")
+                    .HasCollation("utf8mb4_general_ci");
 
                 entity.Property(e => e.Direction)
                     .HasColumnType("varchar(50)")
@@ -134,16 +141,36 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
             _mqttClient = factory.CreateMqttClient();
             _mqttClient.UseApplicationMessageReceivedHandler(Receivehandler);
             _mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
-            _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("SHLOGO/" + Clientid).Build());
+            _mqttClient.UseConnectedHandler(async e =>
+            {
+                await _mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("shlogo/" + Clientid + "/").Build());
+            });
         }
 
-        private void Receivehandler(MqttApplicationMessageReceivedEventArgs e)
+        private async void Receivehandler(MqttApplicationMessageReceivedEventArgs e)
         {
-            Console.WriteLine(e.ApplicationMessage.Payload);
-            
-            using(var context =  new SmartHomeDBContext())
+            string[] strings = e.ApplicationMessage.Topic.Split('/');
+            int index = strings.Length-2;
+
+            using (var context =  new SmartHomeDBContext())
             {
-                Console.WriteLine("YAY");
+                var tempcoll = context.Mqttclients.Where(x => x.ClientId.Equals(strings.ElementAt(index)));
+                if(tempcoll.Any())
+                {
+                    Mqttclients changedelement = tempcoll.First();
+
+                    changedelement.CurrentValue =  int.Parse(Convert.ToChar(e.ApplicationMessage.Payload.Last()).ToString());
+                    context.Entry(changedelement).State = EntityState.Modified;
+                    try
+                    {
+                        await context.SaveChangesAsync();
+                    }
+                    catch
+                    {
+                        throw new Exception("Receivhandler messed up saving");
+                    }
+
+                }
             }
         }
 
@@ -151,12 +178,14 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
         {
             while (!_mqttClient.IsConnected) ;
             var mqttmessage = new MqttApplicationMessageBuilder()
-                .WithTopic("SHLOGO/" + Clientid)
+                .WithTopic("shlogo/" + Clientid + "/set/")
                 .WithPayload(message)
-                .WithExactlyOnceQoS()
-                .WithRetainFlag()
+                //.WithExactlyOnceQoS()
+                .WithAtMostOnceQoS()
+                .WithRetainFlag(false)
                 .Build();
             _mqttClient.PublishAsync(mqttmessage, CancellationToken.None);
+            //Console.WriteLine("Server sent message: " + message + "   to: " + "shlogo/" + Clientid + "/set/");
         }
     }
 }

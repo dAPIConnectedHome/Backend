@@ -11,6 +11,8 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
         }
 
         public int TypeId { get; set; }
+
+        public string Name { get; set; }
         public string Direction { get; set; }
         public string Mode { get; set; }
         public int RangeMin { get; set; }
