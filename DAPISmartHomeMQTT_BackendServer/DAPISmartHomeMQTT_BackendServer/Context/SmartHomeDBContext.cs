@@ -132,7 +132,6 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
     {
         public string Clientid;
         private IMqttClient _mqttClient;
-        private IMqttClientOptions mqttClientOptions;
 
         public ClientConnection(string clientid, IMqttClientOptions mqttClientOptions)
         {
@@ -147,6 +146,9 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
             });
         }
 
+        /// <summary>
+        /// writes changes to db when value changes at sensor or actor
+        /// </summary>
         private async void Receivehandler(MqttApplicationMessageReceivedEventArgs e)
         {
             string[] strings = e.ApplicationMessage.Topic.Split('/');
@@ -174,6 +176,10 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
             }
         }
 
+        /// <summary>
+        /// sends data to actor or senrsor
+        /// </summary>
+        /// <param name="message"></param>
         public void Send(string message)
         {
             while (!_mqttClient.IsConnected) ;
@@ -185,7 +191,6 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
                 .WithRetainFlag(false)
                 .Build();
             _mqttClient.PublishAsync(mqttmessage, CancellationToken.None);
-            //Console.WriteLine("Server sent message: " + message + "   to: " + "shlogo/" + Clientid + "/set/");
         }
     }
 }

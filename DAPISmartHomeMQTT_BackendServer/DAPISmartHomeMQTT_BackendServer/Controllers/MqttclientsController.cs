@@ -154,22 +154,6 @@ namespace DAPISmartHomeMQTT_BackendServer.Controllers
             return Ok();
         }
 
-        // DELETE: api/Mqttclients/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Mqttclients>> DeleteMqttclients(string id)
-        {
-            var mqttclients = await _context.Mqttclients.FindAsync(id);
-            if (mqttclients == null)
-            {
-                return NotFound();
-            }
-
-            _context.Mqttclients.Remove(mqttclients);
-            await _context.SaveChangesAsync();
-
-            return mqttclients;
-        }
-
         private bool MqttclientsExists(string id)
         {
             return _context.Mqttclients.Any(e => e.ClientId == id);

@@ -24,6 +24,7 @@ namespace DAPISmartHomeMQTT_BackendServer
         {
             DbProviderFactories.RegisterFactory("MySql.Data.MySqlClient", MySqlClientFactory.Instance);
 
+            //InitBackend Mqttaccess for dynamicly adding clients
             var factory = new MqttFactory();
             Constances.BackendDataClient = factory.CreateMqttClient();
 
@@ -37,7 +38,7 @@ namespace DAPISmartHomeMQTT_BackendServer
                             .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
                             .Build(), CancellationToken.None);
 
-
+            //add Mqttclient for each already existing db entry
             using (var context = new SmartHomeDBContext())
             {
                 foreach( Mqttclients element in context.Mqttclients)
@@ -62,6 +63,9 @@ namespace DAPISmartHomeMQTT_BackendServer
                     webBuilder.UseStartup<Startup>();
                 });
 
+        /// <summary>
+        /// MqttReceivedHandler for 
+        /// </summary>
         private static void NewElementReceivehandler(MqttApplicationMessageReceivedEventArgs e)
         {
             string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);

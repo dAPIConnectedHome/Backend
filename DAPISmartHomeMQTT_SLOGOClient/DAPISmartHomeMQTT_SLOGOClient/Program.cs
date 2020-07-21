@@ -3,31 +3,53 @@ using MQTTnet.Client;
 using MQTTnet.Client.Options;
 using S7.Net;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace DAPISmartHomeMQTT_SLOGOClient
 {
+    /// <summary>
+    /// Class containing static Connectioninfo
+    /// </summary>
     public static class Constants
     {
+        /// <summary>
+        /// MqttBroker adress
+        /// </summary>
         public static string Brokeradress = "shlogo.dd-dns.de";
+
+        /// <summary>
+        /// MqttBroker port
+        /// </summary>
         public static int BrokerPort = 60000;
+
+        /// <summary>
+        /// localipadress of the siemens logo
+        /// </summary>
         public static string SLogoIP = "192.168.0.30";
     }
 
     class Program
     {
+        /// <summary>
+        /// Locking object for controlling plc access
+        /// </summary>
         static readonly object plclock = new object();
+        
+        /// <summary>
+        /// Plc Object for Siemenslogo access
+        /// </summary>
         static Plc plc = new Plc(CpuType.Logo0BA8, Constants.SLogoIP, 0, 0);
+
+        /// <summary>
+        /// Mqttclient for Datatransfer
+        /// </summary>
         static public IMqttClient mqttClient;
 
         static async Task Main(string[] args)
         {
+            //Mqttclient init
             var factory = new MqttFactory();
 
             mqttClient = factory.CreateMqttClient();
@@ -42,12 +64,19 @@ namespace DAPISmartHomeMQTT_SLOGOClient
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("shlogo/A1002/set/").Build());
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic("shlogo/A1003/set/").Build());
 
+            
+            //Start Task for updating siemenslogo values to Database
             Task pollingTask = new Task(PollingFunction);
             pollingTask.Start();
 
+            
+            
             while (true) ;
         }
 
+        /// <summary>
+        /// MqttReceived Handler for Setting Values
+        /// </summary>
         private static void RangeLampReceivhandler(MqttApplicationMessageReceivedEventArgs e)
         {
             lock (plclock)
@@ -58,8 +87,10 @@ namespace DAPISmartHomeMQTT_SLOGOClient
 
                     if (plc.IsConnected)
                     {
+                        //Get Data from Message
                         int value = int.Parse(Convert.ToChar(e.ApplicationMessage.Payload.Last()).ToString());
 
+                        //Set plc input Memory depending on Sender of Message
                         string Aktorid = e.ApplicationMessage.Topic.Split('/').ElementAt(1);
                         Console.WriteLine(Aktorid + ">> Value set to:" + value);
                         switch (Aktorid)
@@ -118,6 +149,7 @@ namespace DAPISmartHomeMQTT_SLOGOClient
                     }
                     else
                     {
+                        //Keep Thread alive -> no Exception is throwen
                         Console.WriteLine("Fehler bei Verbindung");
                         return;
                     }
@@ -126,69 +158,16 @@ namespace DAPISmartHomeMQTT_SLOGOClient
                 }
                 else
                 {
+                    //Keep Thread alive -> no Exception is throwen
                     Console.WriteLine("Verbindung zu plc nicht mehr möglich");
                     return;
                 }
             }
         }
 
-        private static void ChangeValueReceivehandler(MqttApplicationMessageReceivedEventArgs e)
-        {
-            if (plc.IsAvailable)
-            {
-                plc.OpenAsync();
-
-                if (plc.IsConnected)
-                {
-                    string id = e.ApplicationMessage.Topic.Split('/').Last();
-                    int value = 0;
-                    if (int.TryParse((new System.Text.ASCIIEncoding()).GetString(e.ApplicationMessage.Payload), out value))
-                    {
-                        if (id.Equals("A1000"))
-                        {
-                            lock (plclock)
-                            {
-                                if (value == 1)
-                                    plc.WriteBit(DataType.DataBlock, 200, 0, 1, true);
-                                else if (value == 0)
-                                    plc.WriteBit(DataType.DataBlock, 200, 0, 1, false);
-                            }
-                        }
-                        else if (id.Equals("A1001"))
-                        {
-                            if (value == 1)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 2, true);
-                            else if (value == 0)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 2, false);
-                        }
-                        else if (id.Equals("A1002"))
-                        {
-                            if (value == 1)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 3, true);
-                            else if (value == 0)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 2, false);
-                        }
-                        else if (id.Equals("A1003"))
-                        {
-                            if (value == 1)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 4, true);
-                            else if (value == 0)
-                                plc.WriteBit(DataType.DataBlock, 200, 0, 2, false);
-                        }
-
-                    }
-                }
-                else
-                {
-                    throw new Exception("plc not connected");
-                }
-            }
-            else
-            {
-                throw new Exception("plc unavailable");
-            }
-        }
-
+        /// <summary>
+        /// Function for Updating Values in DB
+        /// </summary>
         public static void PollingFunction()
         {
             //Update all Clientvalues
@@ -229,10 +208,6 @@ namespace DAPISmartHomeMQTT_SLOGOClient
                         plc.WriteTimeout = 100;
                         plc.Close();
                     }
-                    
-
-                    
-
                     Thread.Sleep(1000);
                 }
             }
