@@ -55,4 +55,4 @@ Als Datenbank wird mariadb verwendet. Die Datenbank beinhaltet zwei Tabels:
 1. MQTTClients mit den Spalten ClientID, Name, Topic, Room, Typeid, GroupID, CurrentValue
 2. MQTTClientTypes mit den Spalten TypeID, Name, Direction, Mode, RangeMin, RangeMax
 
-Um importieren der Datenbank und standart werte, kann BackendDB.zip genutzt werden.
+Um importieren der Datenbank und Standardwerte, kann BackendDB.zip genutzt werden.
