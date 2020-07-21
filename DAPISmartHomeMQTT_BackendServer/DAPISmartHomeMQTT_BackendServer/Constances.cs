@@ -11,9 +11,11 @@ namespace DAPISmartHomeMQTT_BackendServer
         /// </summary>
         public static IMqttClient BackendDataClient;
 
-        public static string MqttServerAddr = "shlogo.dd-dns.de";
+        public static string MqttBrokerAddr = "shlogo.dd-dns.de";
 
-        public static int MqttServerPort = 60000;
+        public static int MqttBrokerPort = 60000;
+
+        public static string Mariadbaccess = "server=192.168.0.10;port=3306;database=SmartHomeDB;user=BackendUser;password=qawsed";
 
         /// <summary>
         /// Mqttclient of all db entrys

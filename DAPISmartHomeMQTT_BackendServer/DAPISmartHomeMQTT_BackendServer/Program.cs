@@ -35,7 +35,7 @@ namespace DAPISmartHomeMQTT_BackendServer
             });
             Constances.BackendDataClient.ConnectAsync(new MqttClientOptionsBuilder()
                         .WithClientId("BackendAdderClient")
-                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .WithTcpServer(Constances.MqttBrokerAddr, Constances.MqttBrokerPort)
                             .Build(), CancellationToken.None);
 
             //add Mqttclient for each already existing db entry
@@ -46,7 +46,7 @@ namespace DAPISmartHomeMQTT_BackendServer
                     Constances.MqttClientConnections.Add(new ClientConnection(element.ClientId,
                         new MqttClientOptionsBuilder()
                         .WithClientId(element.ClientId)
-                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .WithTcpServer(Constances.MqttBrokerAddr, Constances.MqttBrokerPort)
                             .Build()));
                 }
             }
@@ -116,7 +116,7 @@ namespace DAPISmartHomeMQTT_BackendServer
 
                 Constances.MqttClientConnections.Add(new ClientConnection(newclient.ClientId, new MqttClientOptionsBuilder()
                         .WithClientId(newclient.ClientId)
-                            .WithTcpServer(Constances.MqttServerAddr, Constances.MqttServerPort)
+                            .WithTcpServer(Constances.MqttBrokerAddr, Constances.MqttBrokerPort)
                             .Build()));
             }
         }

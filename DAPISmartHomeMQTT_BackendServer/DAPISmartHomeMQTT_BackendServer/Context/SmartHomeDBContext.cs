@@ -32,7 +32,7 @@ namespace DAPISmartHomeMQTT_BackendServer.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySql("server=192.168.0.10;port=3306;database=SmartHomeDB;user=BackendUser;password=qawsed", x => x.ServerVersion("10.3.22-mariadb"));
+                optionsBuilder.UseMySql("Mariadbaccess", x => x.ServerVersion("10.3.22-mariadb"));
             }
         }
 
