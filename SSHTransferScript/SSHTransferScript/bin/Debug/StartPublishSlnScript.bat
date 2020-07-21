@@ -1,2 +1,0 @@
-powershell.exe PublishSlnScript.ps1 C:\GitHubRepos\DAPISmartHomeMQTT\Backend\DAPISmartHomeMQTT_BackendServer
-PAUSE
